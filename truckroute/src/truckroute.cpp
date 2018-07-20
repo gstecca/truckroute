@@ -7,9 +7,12 @@
 //============================================================================
 
 #include <iostream>
+#include <ilcplex/ilocplex.h>
 using namespace std;
 
 int main() {
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
 	return 0;
+	IloEnv env;
+	IloModel model(env);
 }
