@@ -3,7 +3,7 @@
 // Author      : gstecca
 // Version     :
 // Copyright   : no copyright here
-// Description : Hello World in C++, Ansi-style
+// Description : Hello World in C++
 //============================================================================
 
 #include <iostream>
