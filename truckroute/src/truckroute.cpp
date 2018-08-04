@@ -8,11 +8,17 @@
 
 #include <iostream>
 #include <ilcplex/ilocplex.h>
+#include <truckroute.h>
 using namespace std;
 
 int main() {
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-	return 0;
 	IloEnv env;
 	IloModel model(env);
+	mdata data;
+	data.C = 33;
+	data.k = 7;
+
+	cout << "problem has to be solved for k=" << data.k << " vehicles\n";
+	return 0;
 }
