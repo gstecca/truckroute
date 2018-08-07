@@ -33,17 +33,20 @@ int load_csv(trdata * dat, string filenamebase)
 	cout << "reading " << filename << std::endl;
 	ifstream myfile(filename);
     string line;
+	string delimiter = ",";
+	string token1;
+	string token2;
+	size_t pos;
+	int startsub;
     if(myfile) {
         //* dat = new toptwdata()
         getline(myfile, line);
+
         for (int i = 0; i < 5; i++){
 			getline(myfile, line);
 			cout << line << "\n";
-			string delimiter = ",";
-			string token1;
-			string token2;
-			int startsub = 0;
-			size_t pos = line.find(delimiter);
+			startsub = 0;
+			pos = line.find(delimiter);
 			token1 = line.substr(startsub, pos);
 			startsub = pos + 1;
 			pos = line.find(delimiter, startsub);
@@ -61,6 +64,10 @@ int load_csv(trdata * dat, string filenamebase)
 
 			cout << "READ " <<  token1 << "\n";
         }
+        myfile.close();
+    } else
+        cout << "error opening file\n";
+
 
         /*
          * READING NETWORK
@@ -68,8 +75,22 @@ int load_csv(trdata * dat, string filenamebase)
         fsheet = "network";
         filename = filenamebase + "_" + fsheet + ".csv";
         cout << "reading " << filename << std::endl;
-        getline(myfile, line); // skip first line
-
+        ifstream myfile2(filename);
+        if(myfile){
+			getline(myfile2, line); // skip first line
+			while(getline(myfile2, line)) {
+				pos = line.find(delimiter);
+				token1 = line.substr(startsub, pos);
+				startsub = pos + 1;
+				pos = line.find(delimiter, startsub);
+				token2 = line.substr(startsub, pos - startsub);
+				startsub = pos +1;
+				pos = line.find(delimiter, startsub);
+				string token3 = line.substr(startsub, pos - startsub);
+				cout << token1 << "," << token2 << ","<< token3 << "\n";
+			}
+        } else
+            cout << "error opening file\n";
 
         /*
 
@@ -94,10 +115,11 @@ int load_csv(trdata * dat, string filenamebase)
 
         int i = 0;
 
-        */
+
 
         while(getline(myfile, line)) {
-            /*
+            */
+           /*
             * 	i x y d S f a list O C
             *
             *   Where
@@ -120,10 +142,10 @@ int load_csv(trdata * dat, string filenamebase)
             *
             */
             //cout << "line: " << line << "\n";
-
+        	/*
         	cout << line << "\n";
 
-        	/*
+
 
             string buf; // Have a buffer string
             stringstream ss(line); // Insert the string into a stream
@@ -167,13 +189,9 @@ int load_csv(trdata * dat, string filenamebase)
                 i = 1;
             }
 
-            */
+
         }
-
-    } else
-        cout << "error opening file\n";
-
-
+        */
 
     return 0;
 }
