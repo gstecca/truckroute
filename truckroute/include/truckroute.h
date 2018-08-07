@@ -21,7 +21,7 @@ struct order {
 };
 
 
-struct mdata {
+struct trdata {
 	std::vector<int> o; // order
 	std::vector<int> o_s; // order source
 	std::vector<int> o_t; // order target
@@ -35,6 +35,8 @@ struct mdata {
 	int target;
 
 };
+
+int load_csv(trdata * dat, std::string filenamebase);
 
 
 
