@@ -17,39 +17,67 @@ int main() {
 	IloEnv env;
 	IloModel model(env);
 	trdata dat;
-	string filenamebase = "instanzaNord1";
+	string filenamebase = "input/instanzaNord1";
 	load_csv(&dat, filenamebase);
-	dat.C = 33;
-	dat.k = 7;
-
-	cout << "problem has to be solved for k=" << dat.k << " vehicles\n";
 	return 0;
 }
 
 int load_csv(trdata * dat, string filenamebase)
 //int load_data_tw(vector<int>* profits, vector<coord>* coords, int* n, int* m, float* tau, string filename)
 {
-    string fsheet = "general";
+    /*
+     * READING GENERAL
+     */
+	string fsheet = "general";
     string filename = filenamebase + "_" + fsheet + ".csv";
 	cout << "reading " << filename << std::endl;
 	ifstream myfile(filename);
-    cout << "filename: " << filename << "\n";
     string line;
     if(myfile) {
         //* dat = new toptwdata()
         getline(myfile, line);
-        string delimiter = " ";
-        string token;
-        int startsub = 0;
-        size_t pos = line.find(delimiter);
-        token = line.substr(startsub, pos);
+        for (int i = 0; i < 5; i++){
+			getline(myfile, line);
+			cout << line << "\n";
+			string delimiter = ",";
+			string token1;
+			string token2;
+			int startsub = 0;
+			size_t pos = line.find(delimiter);
+			token1 = line.substr(startsub, pos);
+			startsub = pos + 1;
+			pos = line.find(delimiter, startsub);
+			token2 = line.substr(startsub, pos - startsub);
+			if (token1 == "k")
+				dat->k = stoi(token2);
+			else if (token1 == "C")
+				dat->C = stoi(token2);
+			else if (token1 == "F")
+				dat->F = stoi(token2);
+			else if (token1 == "source")
+				dat->source = stoi(token2);
+			else if (token1 == "target")
+				dat->target = stoi(token2);
+
+			cout << "READ " <<  token1 << "\n";
+        }
+
+        /*
+         * READING NETWORK
+         */
+        fsheet = "network";
+        filename = filenamebase + "_" + fsheet + ".csv";
+        cout << "reading " << filename << std::endl;
+        getline(myfile, line); // skip first line
+
+
+        /*
+
+
         //
 
-        startsub = pos + 1; //
-        pos = line.find(delimiter, startsub);
-        token = line.substr(startsub, pos - startsub);
-            // coords[i][1] = stof(token);
-        dat->m = stoi(token);
+         //
+
         //cout << dat->m << "\n";
 
         startsub = pos + 1; //
@@ -65,6 +93,9 @@ int load_csv(trdata * dat, string filenamebase)
             // profit
 
         int i = 0;
+
+        */
+
         while(getline(myfile, line)) {
             /*
             * 	i x y d S f a list O C
@@ -90,6 +121,10 @@ int load_csv(trdata * dat, string filenamebase)
             */
             //cout << "line: " << line << "\n";
 
+        	cout << line << "\n";
+
+        	/*
+
             string buf; // Have a buffer string
             stringstream ss(line); // Insert the string into a stream
 
@@ -98,12 +133,19 @@ int load_csv(trdata * dat, string filenamebase)
 
             while (ss >> buf)
                 tokens.push_back(buf);
+
+
+            */
+
             /*cout << "LINE TOKENIZED  \n";
             for (string aaa : tokens)
                 cout << aaa << "*";
             cout << "\n";
             */
-            coord* c = new coord();
+
+        	/*
+        	 *
+        	coord* c = new coord();
             tw * ttw = new tw();
 
             dat->id.push_back(stoi(tokens[0]));
@@ -124,6 +166,8 @@ int load_csv(trdata * dat, string filenamebase)
                 dat->tau = ttw->r;
                 i = 1;
             }
+
+            */
         }
 
     } else

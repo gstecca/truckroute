@@ -31,6 +31,7 @@ struct trdata {
 	std::vector<int> n;
 	int C; //max vehicle capacity
 	int k; //number of vehicles
+	int F; // fixed cost for vehicle stop
 	int source;
 	int target;
 
