@@ -79,6 +79,7 @@ int load_csv(trdata * dat, string filenamebase)
         if(myfile){
 			getline(myfile2, line); // skip first line
 			while(getline(myfile2, line)) {
+				//why?
 				pos = line.find(delimiter);
 				token1 = line.substr(startsub, pos);
 				startsub = pos + 1;
