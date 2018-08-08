@@ -11,13 +11,14 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <tuple>
 
 
+typedef std::tuple<int, int> t_arc;
 
-struct order {
-	int from;
-	int to;
-	int qty;
+struct s_cost {
+	int c; //cost
+	float t; //time
 };
 
 
@@ -26,9 +27,9 @@ struct trdata {
 	std::vector<int> o_s; // order source
 	std::vector<int> o_t; // order target
 	std::map<int,int> order_qty;
-	std::map<int,int> c; // arc cost
+	std::map<t_arc,s_cost> arcs; // arc cost
 	std::map<int,int> t; //arc traveling time
-	std::vector<int> n;
+	std::vector<int> n; //nodes
 	int C; //max vehicle capacity
 	int k; //number of vehicles
 	int F; // fixed cost for vehicle stop

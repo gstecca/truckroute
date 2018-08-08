@@ -79,16 +79,28 @@ int load_csv(trdata * dat, string filenamebase)
         if(myfile){
 			getline(myfile2, line); // skip first line
 			while(getline(myfile2, line)) {
-				//why?
+				startsub = 0;
 				pos = line.find(delimiter);
-				token1 = line.substr(startsub, pos);
+				int from = stoi(line.substr(startsub, pos));
 				startsub = pos + 1;
 				pos = line.find(delimiter, startsub);
-				token2 = line.substr(startsub, pos - startsub);
+				int to = stoi(line.substr(startsub, pos - startsub));
 				startsub = pos +1;
 				pos = line.find(delimiter, startsub);
-				string token3 = line.substr(startsub, pos - startsub);
-				cout << token1 << "," << token2 << ","<< token3 << "\n";
+				int c = stoi(line.substr(startsub, pos - startsub));
+				startsub = pos +1;
+				pos = line.find(delimiter, startsub);
+				float t = stof(line.substr(startsub, pos - startsub));
+				cout << from << "\t" << to << "\t"<< c << "\t" << t << "\n";
+				t_arc arc = std::make_tuple(from, to);
+				s_cost arc_cost = {c, t};
+				dat->arcs[arc] = arc_cost;
+
+				//debug
+				arc = std::make_tuple(from, to);
+				arc_cost = {++c, ++t};
+				dat->arcs[arc] = arc_cost;
+
 			}
         } else
             cout << "error opening file\n";
