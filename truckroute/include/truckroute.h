@@ -12,6 +12,7 @@
 #include <map>
 #include <string>
 #include <tuple>
+#include <set>
 
 
 typedef std::tuple<int, int> t_arc;
@@ -29,7 +30,7 @@ struct trdata {
 	std::map<int,int> order_qty;
 	std::map<t_arc,s_cost> arcs; // arc cost
 	std::map<int,int> t; //arc traveling time
-	std::vector<int> n; //nodes
+	std::set<int> n; //nodes
 	int C; //max vehicle capacity
 	int k; //number of vehicles
 	int F; // fixed cost for vehicle stop

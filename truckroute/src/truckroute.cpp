@@ -82,9 +82,11 @@ int load_csv(trdata * dat, string filenamebase)
 				startsub = 0;
 				pos = line.find(delimiter);
 				int from = stoi(line.substr(startsub, pos));
+				dat->n.insert(from);
 				startsub = pos + 1;
 				pos = line.find(delimiter, startsub);
 				int to = stoi(line.substr(startsub, pos - startsub));
+				dat->n.insert(to);
 				startsub = pos +1;
 				pos = line.find(delimiter, startsub);
 				int c = stoi(line.substr(startsub, pos - startsub));
@@ -96,14 +98,14 @@ int load_csv(trdata * dat, string filenamebase)
 				s_cost arc_cost = {c, t};
 				dat->arcs[arc] = arc_cost;
 
-				//debug
-				arc = std::make_tuple(from, to);
-				arc_cost = {++c, ++t};
-				dat->arcs[arc] = arc_cost;
 
 			}
         } else
             cout << "error opening file\n";
+
+        /*
+         * READING ORDERS
+         */
 
         /*
 
