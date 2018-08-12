@@ -28,11 +28,27 @@ struct trdata {
 	std::map<t_odserv, int> orders; // order
 	std::map<t_arc,s_cost> arcs; // arc cost
 	std::set<int> n; //nodes
+	std::map<int, std::set<int>> fstar; //forward star
+	std::map<int, std::set<int>> bstar; //backward star
 	int C; //max vehicle capacity
 	int k; //number of vehicles
 	int F; // fixed cost for vehicle stop
 	int source;
 	int target;
+	void insertstar(int i, int j){
+		n.insert(i);
+		n.insert(j);
+		if (fstar.count(i) == 0)
+			fstar[i] = std::set<int>();
+		else
+			fstar[i].insert(j);
+		if (fstar.count(j) == 0)
+			fstar[j] = std::set<int>();
+		else
+			fstar[j].insert(i);
+
+
+	}
 	std::string to_string(){
 		std::string ss = "";
 		ss += "C:" + std::to_string(C)  + "\t k:" + std::to_string(k) + "\t F:" + std::to_string(F) + "\t source: " + std::to_string(source);
@@ -56,8 +72,15 @@ struct trdata {
 
 };
 
+struct trparams{
+	float maxtimetour;
+	int maxz;
+
+};
+
 int load_csv(trdata * dat, std::string filenamebase);
-int buildmodel(IloModel* model, trdata* dat);
+int buildmodel(IloModel* model, trdata* dat, trparams par);
+trparams fillparams(trdata *dat);
 
 
 
