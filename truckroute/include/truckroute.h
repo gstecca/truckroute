@@ -40,13 +40,10 @@ struct trdata {
 		n.insert(j);
 		if (fstar.count(i) == 0)
 			fstar[i] = std::set<int>();
-		else
-			fstar[i].insert(j);
-		if (fstar.count(j) == 0)
-			fstar[j] = std::set<int>();
-		else
-			fstar[j].insert(i);
-
+		if (bstar.count(j) == 0)
+			bstar[j] = std::set<int>();
+		fstar[i].insert(j);
+		bstar[j].insert(i);
 
 	}
 	std::string to_string(){
@@ -75,11 +72,14 @@ struct trdata {
 struct trparams{
 	float maxtimetour;
 	int maxz;
+	int M; //bigM
+	int MSEQ; // bigM for sequence constraint
 
 };
 
 int load_csv(trdata * dat, std::string filenamebase);
 int buildmodel(IloModel* model, trdata* dat, trparams par);
+int solvemodel(IloModel* model, trdata* dat, trparams par);
 trparams fillparams(trdata *dat);
 
 
