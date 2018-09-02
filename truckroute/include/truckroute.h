@@ -17,6 +17,7 @@
 
 typedef std::tuple<int, int> t_arc;
 typedef std::tuple<int, int> t_odserv; // origin - destination service
+typedef std::map<t_odserv, int> t_orders;
 
 struct s_cost {
 	int c; //cost
@@ -33,6 +34,7 @@ struct trdata {
 	int C; //max vehicle capacity
 	int k; //number of vehicles
 	int F; // fixed cost for vehicle stop
+	float H; // max tour duration after fixed cost will be applied
 	int source;
 	int target;
 	void insertstar(int i, int j){
@@ -40,8 +42,12 @@ struct trdata {
 		n.insert(j);
 		if (fstar.count(i) == 0)
 			fstar[i] = std::set<int>();
+		if(bstar.count(i) == 0)
+			bstar[i] = std::set<int>();
 		if (bstar.count(j) == 0)
 			bstar[j] = std::set<int>();
+		if (fstar.count(j) == 0)
+			fstar[j] == std::set<int>();
 		fstar[i].insert(j);
 		bstar[j].insert(i);
 
@@ -51,7 +57,9 @@ struct trdata {
 		ss += "C:" + std::to_string(C)  + "\t k:" + std::to_string(k) + "\t F:" + std::to_string(F) + "\t source: " + std::to_string(source);
 		ss += "\n nodes: " + std::to_string(n.size());
 		ss += "\n arcs: " + std::to_string(arcs.size());
-		ss += "\n orders: " + std::to_string(orders.size()) + "\n";
+		ss += "\n orders: " + std::to_string(orders.size());
+		ss += "\n source: " + std::to_string(source);
+		ss += "\n target: " + std::to_string(target) + "\n";
 		ss += "arcs:\n";
 		ss += "from\tto\tcost\ttime\n";
 		for (auto a : arcs){
@@ -64,23 +72,32 @@ struct trdata {
 			ss += std::to_string(std::get<0>(o.first)) + "\t" + std::to_string(std::get<1>(o.first))
 					+ "\t" + std::to_string(o.second) + "\n" ;
 		}
+		ss += "y_p_k:\n";
 		return ss;
 	}
 
 };
 
+
+
 struct trparams{
+
 	float maxtimetour;
-	int maxz;
+	int maxz=10;
 	int M; //bigM
 	int MSEQ; // bigM for sequence constraint
+	int timeLimit = 600;
+	bool subTourElimination = false;
+	bool zconstraint;
+	std::string modelType = "load";
+	std::string instance;
+	std::string linearize;
+	std::map<std::string,std::string> p;
 
 };
 
 int load_csv(trdata * dat, std::string filenamebase);
-int buildmodel(IloModel* model, trdata* dat, trparams par);
-int solvemodel(IloModel* model, trdata* dat, trparams par);
-trparams fillparams(trdata *dat);
+trparams fillparams(std::string filename);
 
 
 
