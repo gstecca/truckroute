@@ -37,6 +37,7 @@ struct trdata {
 	float H; // max tour duration after fixed cost will be applied
 	int source;
 	int target;
+	int FS = 100; // fixed arc activation cost (it should be FS_i
 	void insertstar(int i, int j){
 		n.insert(i);
 		n.insert(j);
@@ -89,14 +90,18 @@ struct trparams{
 	int timeLimit = 600;
 	bool subTourElimination = false;
 	bool zconstraint;
+	bool service; // if true services are activated
 	std::string modelType = "load";
 	std::string instance;
 	std::string linearize;
+
+
 	std::map<std::string,std::string> p;
 
 };
 
 int load_csv(trdata * dat, std::string filenamebase);
+int addServices(trdata *dat, const trparams& par);
 trparams fillparams(std::string filename);
 
 

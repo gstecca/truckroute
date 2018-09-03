@@ -40,6 +40,7 @@ std::string getname (std::string baseName, int i, int j, int k);
 std::string getname (std::string baseName, int i, int j, int k, int p);
 
 
+
 bool debug = false;
 
 
@@ -65,7 +66,7 @@ int load_csv(trdata * dat, std::string filenamebase)
         //* dat = new toptwdata()
         getline(myfile, line);
 
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < 7; i++){
 			getline(myfile, line);
 			//cout << line << "\n";
 			startsub = 0;
@@ -86,6 +87,8 @@ int load_csv(trdata * dat, std::string filenamebase)
 				dat->source = stoi(token2);
 			else if (token1 == "target")
 				dat->target = stoi(token2);
+			else if (token1 == "FS")
+				dat->FS = stoi(token2);
 
 			//cout << "READ " <<  token1 << "\n";
         }
@@ -110,7 +113,6 @@ int load_csv(trdata * dat, std::string filenamebase)
 				startsub = pos + 1;
 				pos = line.find(delimiter, startsub);
 				int to = stoi(line.substr(startsub, pos - startsub));
-				dat->insertstar(from, to);
 				startsub = pos +1;
 				pos = line.find(delimiter, startsub);
 				int c = stoi(line.substr(startsub, pos - startsub));
@@ -118,6 +120,7 @@ int load_csv(trdata * dat, std::string filenamebase)
 				pos = line.find(delimiter, startsub);
 				float t = stof(line.substr(startsub, pos - startsub));
 				//cout << from << "\t" << to << "\t"<< c << "\t" << t << "\n";
+				dat->insertstar(from, to);
 				t_arc arc = std::make_tuple(from, to);
 				s_cost arc_cost = {c, t};
 				dat->arcs[arc] = arc_cost;
@@ -156,7 +159,40 @@ int load_csv(trdata * dat, std::string filenamebase)
 
     return 0;
 }
+/*
+ * add a new source (node n+1) and a new target (node n+2)
+ * arcs from the new source will have 0 travellilng time and FS_i cost
+ * while arcs towards the new target will have 0 travelling time and 0 cost
+ */
+int addServices(trdata *dat, trparams& par){
+	int mymax = *dat->n.rbegin();
+	int newSource = mymax + 1;
+	int newTarget = mymax +2;
+	int oldSource = dat->source;
+	dat->source = newSource;
+	dat->target = newTarget;
+	for(auto const& i : dat->n){
+		int from = dat->source;
+		float t = 0;
+		int c = dat->FS;
+		if (i == oldSource)
+			c = 0;
+		dat->insertstar(from, i);
+		t_arc arc = std::make_tuple(from, i);
+		s_cost arc_cost = {c, t};
+		dat->arcs[arc] = arc_cost;
 
+		c = 0;
+		int to = dat->target;
+		dat->insertstar(i, to);
+		t_arc arc2 = std::make_tuple(i, to);
+		s_cost arc2_cost = {c,t};
+		dat->arcs[arc2] = arc2_cost;
+	}
+
+
+	return 0;
+}
 int buildmodel(TRCplexSol* sol, trdata* dat, trparams par) {
 	using std::string;
 	using std::to_string;
@@ -404,8 +440,10 @@ int buildmodel(TRCplexSol* sol, trdata* dat, trparams par) {
     		IloExpr exprop(env);
 			int i = get<0>(order.first);
 			int j = get<1>(order.first);
-			exprop += vars.at(getname("a", i, k)) - vars.at(getname("a", j, k));
-			constrs[getname("c19_oprec_",i, j, k)] = buildConstr(model, exprop, 1, false, getname("c19_oprec_",i, j, k));
+			exprop += vars.at(getname("a", i, k)) - vars.at(getname("a", j, k))
+					+ par.MSEQ * vars.at(getname("y",i,j,k));
+			constrs[getname("c19_oprec_",i, j, k)] =
+					buildConstr(model, exprop, par.MSEQ, false, getname("c19_oprec_",i, j, k));
 			exprop.end();
 		}
     }
@@ -680,8 +718,10 @@ int buildmodelLoad(TRCplexSol* sol, trdata* dat, trparams par) {
     		IloExpr exprop(env);
 			int i = get<0>(order.first);
 			int j = get<1>(order.first);
-			exprop += vars.at(getname("a", i, k)) - vars.at(getname("a", j, k));
-			constrs[getname("c19_oprec_",i, j, k)] = buildConstr(model, exprop, 0, false, getname("c19_oprec_",i, j, k));
+			exprop += vars.at(getname("a", i, k)) - vars.at(getname("a", j, k))
+					+ par.MSEQ * vars.at(getname("y",i,j,k));
+			constrs[getname("c19_oprec_",i, j, k)] =
+					buildConstr(model, exprop, par.MSEQ, false, getname("c19_oprec_",i, j, k));
 			exprop.end();
 		}
     }
@@ -763,11 +803,11 @@ IloCplex solvemodel(TRCplexSol* sol, trdata* dat, trparams par){
 	IloCplex cplex(sol->model);
 	sol->cplex = cplex;
 	cplex.setParam(IloCplex::TiLim, par.timeLimit);
-	cplex.exportModel(("logs/model_" + par.modelType + "_" + par.instance + ".lp").c_str());
+	cplex.exportModel(("logs/model_s" + std::to_string(par.service) + "_" + par.modelType + "_" + par.instance + ".lp").c_str());
 
 	try{
 		cplex.solve();
-	cplex.writeSolution(("logs/solution_" + par.instance + ".sol").c_str() );
+	cplex.writeSolution(("logs/solution_s" + std::to_string(par.service) + "_" + par.instance + ".sol").c_str() );
 	}
 	   catch (IloException& ex) {
 	      std::cerr << "Error: " << ex << std::endl;
@@ -1001,6 +1041,7 @@ trparams fillparams(std::string filename){
 	t.modelType = t.p.at("modelType");
 	t.subTourElimination =  t.p.at("subTourElimination")!="0";
 	t.zconstraint = t.p.at("zconstraint") != "0";
+	t.service = t.p.at("service") != "0";
 	t.timeLimit = stoi(t.p.at("timeLimit"));
 	return t;
 }
@@ -1026,6 +1067,12 @@ int main( int argc, char *argv[] ) {
 	std::string filenamebase = "input/" + instanceName;
 	load_csv(&dat, filenamebase);
 	std::cout << dat.to_string() << std::endl;
+	if(par.service){
+		std::cout <<"************ADDING SERVICES (new sources and new target)************" << std::endl;
+		addServices(&dat, par);
+		std::cout << "updated data-------------"  << std::endl;
+		std::cout << dat.to_string() << std::endl;
+	}
 
 	std::cout << "*************BUILDING MODEL**************" << std::endl;
 	int ret = -1;

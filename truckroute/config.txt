@@ -1,10 +1,11 @@
-instance=instanzaNord1_20
+instance=instanzaNord1_7
 timeLimit=1000
 subTourElimination=1
-modelType=load
+modelType=original
 linearize=mip
 maxtimetour=10000
 maxz=1000
 M=10000
 MSEQ=1000
 zconstraint=1
+service=1
