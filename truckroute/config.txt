@@ -1,4 +1,4 @@
-instance=instanzaNord1_9
+instance=instanzaNord1_20
 timeLimit=1000
 subTourElimination=1
 modelType=original
