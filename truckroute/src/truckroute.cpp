@@ -93,71 +93,70 @@ int load_csv(trdata * dat, std::string filenamebase)
 			//cout << "READ " <<  token1 << "\n";
         }
         myfile.close();
-    } else
+    } else{
     	std::cout << "error opening file\n";
+    }
 
 
         /*
          * READING NETWORK
          */
-        fsheet = "network";
-        filename = filenamebase + "_" + fsheet + ".csv";
-        std::cout << "reading " << filename << std::endl;
-        std::ifstream myfile2(filename);
-        if(myfile2){
-			getline(myfile2, line); // skip first line
-			while(getline(myfile2, line)) {
-				startsub = 0;
-				pos = line.find(delimiter);
-				int from = stoi(line.substr(startsub, pos));
-				startsub = pos + 1;
-				pos = line.find(delimiter, startsub);
-				int to = stoi(line.substr(startsub, pos - startsub));
-				startsub = pos +1;
-				pos = line.find(delimiter, startsub);
-				int c = stoi(line.substr(startsub, pos - startsub));
-				startsub = pos +1;
-				pos = line.find(delimiter, startsub);
-				float t = stof(line.substr(startsub, pos - startsub));
-				//cout << from << "\t" << to << "\t"<< c << "\t" << t << "\n";
-				dat->insertstar(from, to);
-				t_arc arc = std::make_tuple(from, to);
-				s_cost arc_cost = {c, t};
-				dat->arcs[arc] = arc_cost;
-			}
-			myfile2.close();
-        } else
-        	std::cout << "error opening file\n";
-        /*
-         * READING ORDERS
-         */
-        fsheet = "orders";
-        filename = filenamebase + "_" + fsheet + ".csv";
-        std::cout << "reading " << filename << std::endl;
-        std::ifstream myfile3(filename);
-        if (myfile3){
-        	getline(myfile3, line); // skipping first line
-        	while(getline(myfile3, line)){
-        		startsub = 0;
-        		pos = line.find(delimiter);
-        		int from = stoi(line.substr(startsub, pos));
-        		startsub = pos + 1;
-        		pos = line.find(delimiter, startsub);
-        		int to = stoi(line.substr(startsub, pos - startsub));
-        		startsub = pos + 1;
-        		pos = line.find(delimiter, startsub);
-        		int d = stoi(line.substr(startsub, pos - startsub));
-        		t_odserv od = std::make_tuple(from, to);
-        		if (dat->orders[od])
-        			dat->orders[od] = dat->orders[od] + d;
-        		else
-        			dat->orders[od] = d;
-        		//cout << from << "\t" << to << "\t"<< d << "\n";
-        	}
-        }
-
-
-    return 0;
+	fsheet = "network";
+	filename = filenamebase + "_" + fsheet + ".csv";
+	std::cout << "reading " << filename << std::endl;
+	std::ifstream myfile2(filename);
+	if(myfile2){
+		getline(myfile2, line); // skip first line
+		while(getline(myfile2, line)) {
+			startsub = 0;
+			pos = line.find(delimiter);
+			int from = stoi(line.substr(startsub, pos));
+			startsub = pos + 1;
+			pos = line.find(delimiter, startsub);
+			int to = stoi(line.substr(startsub, pos - startsub));
+			startsub = pos +1;
+			pos = line.find(delimiter, startsub);
+			int c = stoi(line.substr(startsub, pos - startsub));
+			startsub = pos +1;
+			pos = line.find(delimiter, startsub);
+			float t = stof(line.substr(startsub, pos - startsub));
+			//cout << from << "\t" << to << "\t"<< c << "\t" << t << "\n";
+			dat->insertstar(from, to);
+			t_arc arc = std::make_tuple(from, to);
+			s_cost arc_cost = {c, t};
+			dat->arcs[arc] = arc_cost;
+		}
+		myfile2.close();
+	} else
+		std::cout << "error opening file\n";
+	/*
+	 * READING ORDERS
+	 */
+	fsheet = "orders";
+	filename = filenamebase + "_" + fsheet + ".csv";
+	std::cout << "reading " << filename << std::endl;
+	std::ifstream myfile3(filename);
+	if (myfile3){
+		getline(myfile3, line); // skipping first line
+		while(getline(myfile3, line)){
+			startsub = 0;
+			pos = line.find(delimiter);
+			int from = stoi(line.substr(startsub, pos));
+			startsub = pos + 1;
+			pos = line.find(delimiter, startsub);
+			int to = stoi(line.substr(startsub, pos - startsub));
+			startsub = pos + 1;
+			pos = line.find(delimiter, startsub);
+			int d = stoi(line.substr(startsub, pos - startsub));
+			t_odserv od = std::make_tuple(from, to);
+			if (dat->orders[od])
+				dat->orders[od] = dat->orders[od] + d;
+			else
+				dat->orders[od] = d;
+			//cout << from << "\t" << to << "\t"<< d << "\n";
+		}
+	}
+	return 0;
 }
 /*
  * add a new source (node n+1) and a new target (node n+2)
@@ -432,9 +431,11 @@ int buildmodel(TRCplexSol* sol, trdata* dat, trparams par) {
     	exprz -= vars.at(getname("z",k));
     	constrs[getname("c14z_",k)] = buildConstr(model, exprz, 1, false, getname("c14z_",k));
     }
+
     /**
      * c19_constraint orders precedence
      */
+
     for (auto const& order : dat->orders){
     	for(int k = 0; k < dat->k; k++){
     		IloExpr exprop(env);
@@ -447,6 +448,7 @@ int buildmodel(TRCplexSol* sol, trdata* dat, trparams par) {
 			exprop.end();
 		}
     }
+
 	/*
 	 *
 	 * OBJECTIVE FUNCTION
@@ -1045,7 +1047,6 @@ trparams fillparams(std::string filename){
 	t.timeLimit = stoi(t.p.at("timeLimit"));
 	return t;
 }
-
 
 int main( int argc, char *argv[] ) {
 	std::cout << "!!!Hello World!!!" << std::endl; // prints !!!Hello World!!!
