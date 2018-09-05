@@ -432,9 +432,11 @@ int buildmodel(TRCplexSol* sol, trdata* dat, trparams par) {
     	exprz -= vars.at(getname("z",k));
     	constrs[getname("c14z_",k)] = buildConstr(model, exprz, 1, false, getname("c14z_",k));
     }
+
     /**
      * c19_constraint orders precedence
      */
+
     for (auto const& order : dat->orders){
     	for(int k = 0; k < dat->k; k++){
     		IloExpr exprop(env);
@@ -447,6 +449,7 @@ int buildmodel(TRCplexSol* sol, trdata* dat, trparams par) {
 			exprop.end();
 		}
     }
+
 	/*
 	 *
 	 * OBJECTIVE FUNCTION
