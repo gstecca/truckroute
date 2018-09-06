@@ -687,6 +687,8 @@ int buildmodelLoad(TRCplexSol* sol, trdata* dat, trparams par) {
 
     	/*
     	 * strenghten constraint 1
+    	 * L_start
+    	 *
     	 */
 
     	for(auto const & j : dat->n){
@@ -697,7 +699,7 @@ int buildmodelLoad(TRCplexSol* sol, trdata* dat, trparams par) {
 			}
 			for(auto const& i : dat->bstar.at(j))
 				exprSc1 -= vars.at(getname("L", i,j,k));
-			std::string cname = getname("CS18",j,k);
+			std::string cname = getname("CS18Lstart_",j,k);
 			constrs[cname] = buildConstr(model, exprSc1, 0, false, cname);
 			exprSc1.end();
     	}
