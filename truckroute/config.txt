@@ -9,3 +9,4 @@ M=10000
 MSEQ=1000
 zconstraint=1
 service=1
+validinequality01=1

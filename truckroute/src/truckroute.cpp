@@ -690,18 +690,52 @@ int buildmodelLoad(TRCplexSol* sol, trdata* dat, trparams par) {
     	 * L_start
     	 *
     	 */
+/*
 
-    	for(auto const & j : dat->n){
-			IloExpr exprSc1(env);
-			for(auto const& order : dat->orders){
-				if(get<1>(order.first) == j)
-					exprSc1 += order.second * vars.at(getname("y", get<0>(order.first),j,k));
+*/
+    	if(par.validinequality01){
+
+        	for(auto const & j : dat->n){
+    			IloExpr exprSc1(env);
+    			for(auto const& order : dat->orders){
+    				if(get<1>(order.first) == j)
+    					exprSc1 += order.second * vars.at(getname("y", get<0>(order.first),j,k));
+    			}
+    			for(auto const& i : dat->bstar.at(j))
+    				exprSc1 -= vars.at(getname("L", i,j,k));
+    			std::string cname = getname("CS18Lstart_",j,k);
+    			constrs[cname] = buildConstr(model, exprSc1, 0, false, cname);
+    			exprSc1.end();
+        	}
+
+    		/*  THESE 2 CONSTRAINTS WILL NOT WORK UNTIL WILL NOT HAVE A VARIABLE TELLING IF AN ARC (i,j)
+    		 * IS TRAVERSED BY A VEHICLE k WITH A ORDER p
+    		 */
+    		/*
+			for(auto const & arc : dat->arcs){
+				int i = get<0>(arc.first);
+				int j = get<1>(arc.first);
+				IloExpr exprSc1(env);
+				exprSc1 -= vars.at(getname("L",i,j,k));
+				for(auto const& order : dat->orders){
+					if(get<0>(order.first) == i)
+						exprSc1 += order.second * vars.at(getname("y", i,get<1>(order.first),k));
+				}
+				std::string cname = getname("CS18Lstart_",i,j,k);
+				constrs[cname] = buildConstr(model, exprSc1, 0, false, cname);
+				exprSc1.end();
+
+				IloExpr exprSc2(env);
+				exprSc2 -= vars.at(getname("L",i,j,k));
+				for(auto const& order : dat->orders){
+					if(get<1>(order.first) == j)
+						exprSc2 += order.second * vars.at(getname("y", get<0>(order.first),j,k));
+				}
+				cname = getname("CS19Lend_",i,j,k);
+				constrs[cname] = buildConstr(model, exprSc2, 0, false, cname);
+				exprSc2.end();
 			}
-			for(auto const& i : dat->bstar.at(j))
-				exprSc1 -= vars.at(getname("L", i,j,k));
-			std::string cname = getname("CS18Lstart_",j,k);
-			constrs[cname] = buildConstr(model, exprSc1, 0, false, cname);
-			exprSc1.end();
+			*/
     	}
 
     	if (par.zconstraint){
@@ -1047,6 +1081,7 @@ trparams fillparams(std::string filename){
 	t.zconstraint = t.p.at("zconstraint") != "0";
 	t.service = t.p.at("service") != "0";
 	t.timeLimit = stoi(t.p.at("timeLimit"));
+	t.validinequality01 = t.p.at("validinequality01") != "0";
 	return t;
 }
 

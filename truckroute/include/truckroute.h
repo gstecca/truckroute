@@ -91,6 +91,7 @@ struct trparams{
 	bool subTourElimination = false;
 	bool zconstraint;
 	bool service; // if true services are activated
+	bool validinequality01; // if true valid inequlities 1 will be activated
 	std::string modelType = "load";
 	std::string instance;
 	std::string linearize;
