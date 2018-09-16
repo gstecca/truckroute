@@ -534,14 +534,15 @@ int buildmodelLoad(TRCplexSol* sol, trdata* dat, trparams par) {
 		vars[name] = buildVar(env, IloNumVar::Int, 0, par.maxz, name);
 	}
 
+	//vars.at(getname("y",0,3,1)).setLB(1);
+
 	/*
 	 * CREATION OF CONSTRAINTS
 	 */
-    for(auto const &order : dat->orders){
+
+	for(auto const &order : dat->orders){
     	int os = get<0>(order.first);
     	int ot = get<1>(order.first);
-    	IloExpr exprs(env);
-    	IloExpr exprt(env);
         IloExpr expr8(env);
         for (int k = 0; k < dat->k; k++){
         	auto vy = vars.at(getname("y", os, ot, k));
@@ -551,6 +552,7 @@ int buildmodelLoad(TRCplexSol* sol, trdata* dat, trparams par) {
         constrs[cname] = buildConstr(model, expr8, -1, true, cname);
         expr8.end();
     }
+
 
     int nvel = dat->k;
     for (int k = 0; k < nvel; k++){
@@ -708,10 +710,25 @@ int buildmodelLoad(TRCplexSol* sol, trdata* dat, trparams par) {
     			exprSc1.end();
         	}
 
+/*NOT IMPROVEMENT
+        	for(auto const & i : dat->n){
+    			IloExpr exprSc2(env);
+    			for(auto const& order : dat->orders){
+    				if(get<0>(order.first) == i)
+    					exprSc2 += order.second * vars.at(getname("y", i, get<1>(order.first),k));
+    			}
+    			for(auto const& ip : dat->fstar.at(i))
+    				exprSc2 -= vars.at(getname("L",i,ip,k));
+    			std::string cname = getname("CS19Lend_",i,k);
+    			constrs[cname] = buildConstr(model, exprSc2, 0, false, cname);
+    			exprSc2.end();
+        	}
+*/
     		/*  THESE 2 CONSTRAINTS WILL NOT WORK UNTIL WILL NOT HAVE A VARIABLE TELLING IF AN ARC (i,j)
     		 * IS TRAVERSED BY A VEHICLE k WITH A ORDER p
     		 */
-    		/*
+
+        	/*
 			for(auto const & arc : dat->arcs){
 				int i = get<0>(arc.first);
 				int j = get<1>(arc.first);
@@ -724,6 +741,8 @@ int buildmodelLoad(TRCplexSol* sol, trdata* dat, trparams par) {
 				std::string cname = getname("CS18Lstart_",i,j,k);
 				constrs[cname] = buildConstr(model, exprSc1, 0, false, cname);
 				exprSc1.end();
+
+
 
 				IloExpr exprSc2(env);
 				exprSc2 -= vars.at(getname("L",i,j,k));
