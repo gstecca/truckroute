@@ -29,9 +29,9 @@
 									<listOptionValue builtIn="false" value="IL_STD"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.1055979062" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/gstecca/Programs/CPLEX_Studio1261/cplex/include"/>
+									<listOptionValue builtIn="false" value="/home/gstecca/opt/CPLEX_Studio_community128/cplex/include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/include}&quot;"/>
-									<listOptionValue builtIn="false" value="/home/gstecca/Programs/CPLEX_Studio1261/concert/include"/>
+									<listOptionValue builtIn="false" value="/home/gstecca/opt/CPLEX_Studio_community128/concert/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.805957507" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -44,8 +44,8 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1084804946" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.1447384494" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.paths.835871630" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" useByScannerDiscovery="false" valueType="libPaths">
-									<listOptionValue builtIn="false" value="/home/gstecca/Programs/CPLEX_Studio1261/cplex/lib/x86-64_linux/static_pic"/>
-									<listOptionValue builtIn="false" value="/home/gstecca/Programs/CPLEX_Studio1261/concert/lib/x86-64_linux/static_pic"/>
+									<listOptionValue builtIn="false" value="/home/gstecca/opt/CPLEX_Studio_community128/cplex/lib/x86-64_linux/static_pic"/>
+									<listOptionValue builtIn="false" value="/home/gstecca/opt/CPLEX_Studio_community128/concert/lib/x86-64_linux/static_pic"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.1097139130" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="ilocplex"/>
@@ -53,6 +53,7 @@
 									<listOptionValue builtIn="false" value="concert"/>
 									<listOptionValue builtIn="false" value="m"/>
 									<listOptionValue builtIn="false" value="pthread"/>
+									<listOptionValue builtIn="false" value="dl"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.711145031" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

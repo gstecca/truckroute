@@ -103,7 +103,7 @@ struct trparams{
 
 int load_csv(trdata * dat, std::string filenamebase);
 int addServices(trdata *dat, const trparams& par);
-trparams fillparams(std::string filename);
+trparams fillparams();
 
 
 
