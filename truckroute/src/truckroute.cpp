@@ -96,10 +96,9 @@ int load_csv(trdata * dat, std::string filenamebase)
 	int startsub;
     if(myfile) {
         //* dat = new toptwdata()
-        getline(myfile, line);
 
-        for (int i = 0; i < 5; i++){
-			getline(myfile, line);
+
+        while (getline(myfile, line)){
 			//cout << line << "\n";
 			startsub = 0;
 			pos = line.find(delimiter);
@@ -478,7 +477,12 @@ IloCplex solvemodel(TRCplexSol* sol, trdata* dat, trparams par){
 	IloCplex cplex(sol->model);
 	sol->cplex = cplex;
 	cplex.exportModel("model.lp");
-	cplex.solve();
+	try{
+		cplex.solve();
+	}catch (IloException& e) {
+		  std::cout << e.getMessage() << std::endl;
+		  e.end();
+		}
 	cplex.out() << "Solution status: " << cplex.getStatus() << std::endl;
 	cplex.out() << " Solution value: " << cplex.getObjValue () << std::endl;
 	cplex.writeSolution("solution.sol");
